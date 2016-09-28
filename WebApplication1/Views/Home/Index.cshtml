@@ -28,10 +28,11 @@
     </div>
 </div>
 
+
 <div class="row">
     <div class="col-md-4">
         <input type="text" placeholder="Message" data-bind="value:message" />
-        <button class="btn btn-primary" data-bind="click:sendMessage">Send!</button>
+        <button class="btn btn-primary" data-bind="click:sendMessage">Send message!</button>
     </div>
     <div class="col-md-4">
         <div data-bind="foreach:messages">
@@ -59,11 +60,27 @@
     </div>
 </div>
 
+
+<div class="row jsKnockTests">
+    <div class="col-md-12">
+        <span data-bind="text: authorName"></span>
+        <p>Enter text <input type="text" data-bind="value: authorName, valueUpdate: afterKeypress"/> </p>
+    </div>
+</div>
+
 @section scripts{
     <script src="~/Scripts/jquery.signalR-2.2.1.js"></script>
     <script src="~/Scripts/knockout-3.4.0.js"></script>
     <script src="~/SignalR/hubs"></script>
     <script>
+        ko.apB = ko.applyBindings;
+        ko.obs = ko.observable;
+        var viewModel = {
+            authorName: "Kafka"
+        };
+
+        ko.apB(viewModel, document.getElementsByClassName("jsKnockTests")[0]);
+
         $(function () {
             bt.addEventListener('click', function (e) {
                 $(mod).modal('show');
@@ -72,39 +89,39 @@
             })
         });
 
-        (function () {
-            var perfHub = $.connection.perfHub;
-            $.connection.hub.logging = true;
-            $.connection.hub.start();
+        //(function () {
+        //    var perfHub = $.connection.perfHub;
+        //    $.connection.hub.logging = true;
+        //    $.connection.hub.start();
 
-            perfHub.client.newMessage = function (message) {
-                model.addMessage(message);
-            }
+        //    perfHub.client.newMessage = function (message) {
+        //        model.addMessage(message);
+        //    }
 
-            var Model = function () {
-                var self = this;
-                self.message = ko.observable(""),
-                self.messages = ko.observableArray();
-            }
+        //    var Model = function () {
+        //        var self = this;
+        //        self.message = ko.observable(""),
+        //        self.messages = ko.observableArray();
+        //    }
 
-            Model.prototype = {
-                sendMessage: function () {
-                    var self = this;
-                    perfHub.server.send(self.message());
-                    self.message("");
-                },
-                addMessage: function (message) {
+        //    Model.prototype = {
+        //        sendMessage: function () {
+        //            var self = this;
+        //            perfHub.server.send(self.message());
+        //            self.message("");
+        //        },
+        //        addMessage: function (message) {
 
-                    var self = this;
-                    self.messages.push(message);
-                }
-            }
+        //            var self = this;
+        //            self.messages.push(message);
+        //        }
+        //    }
 
-            var model = new Model();
-            $(function () {
-                ko.applyBindings(model);
-            })
-        })()
+        //    var model = new Model();
+        //    $(function () {
+        //        ko.applyBindings(model);
+        //    })
+        //})()
     </script>
 
 
