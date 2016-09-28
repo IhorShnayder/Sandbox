@@ -64,7 +64,7 @@
 <div class="row jsKnockTests">
     <div class="col-md-12">
         <span data-bind="text: authorName"></span>
-        <p>Enter text <input type="text" data-bind="value: authorName, valueUpdate: afterKeypress"/> </p>
+        <p>Enter text <input type="text" data-bind="value: authorName"/> </p>
     </div>
 </div>
 
@@ -76,7 +76,7 @@
         ko.apB = ko.applyBindings;
         ko.obs = ko.observable;
         var viewModel = {
-            authorName: "Kafka"
+            authorName: ko.obs("Hell")
         };
 
         ko.apB(viewModel, document.getElementsByClassName("jsKnockTests")[0]);
