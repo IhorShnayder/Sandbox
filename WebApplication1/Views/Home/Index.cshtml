@@ -64,7 +64,11 @@
 <div class="row jsKnockTests">
     <div class="col-md-12">
         <span data-bind="text: authorName"></span>
-        <p>Enter text <input type="text" data-bind="value: authorName"/> </p>
+        <p>Enter text <input type="text" data-bind="textInput: authorName" /> (<a data-bind="attr: {href: twitterUrl}, text: twitterAlias"></a>)</p>
+        <p>
+            <button data-bind="click: capitalizeAlias">HELL</button>
+        </p>
+
     </div>
 </div>
 
@@ -75,8 +79,16 @@
     <script>
         ko.apB = ko.applyBindings;
         ko.obs = ko.observable;
-        var viewModel = {
-            authorName: ko.obs("Hell")
+        function viewModel() {
+            this.authorName= ko.obs("Kafka");
+            this.twitterAlias = ko.obs("@@ardalis");
+            this.twitterUrl = ko.computed(function () {
+                return "twitter.com/" +  this.twitterAlias().replace("@@","");
+            }, this);
+            this.capitalizeAlias = function () {
+                var current = this.twitterAlias();
+                this.twitterAlias(current.toUpperCase());
+            }
         };
 
         ko.apB(viewModel, document.getElementsByClassName("jsKnockTests")[0]);
