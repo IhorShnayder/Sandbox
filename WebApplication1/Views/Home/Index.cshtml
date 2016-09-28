@@ -1,0 +1,112 @@
+﻿<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a> <span id="bt" class="btn btn-warning btn-lg">HELL</span></p>
+</div>
+
+<h1>Hell SignalR</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
+            a broad range of clients, including browsers and mobile devices. ASP.NET Web API
+            is an ideal platform for building RESTful applications on the .NET Framework.
+        </p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <input type="text" placeholder="Message" data-bind="value:message" />
+        <button class="btn btn-primary" data-bind="click:sendMessage">Send!</button>
+    </div>
+    <div class="col-md-4">
+        <div data-bind="foreach:messages">
+            <div data-bind="text:$data"></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal" id="mod">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body…</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.2.1.js"></script>
+    <script src="~/Scripts/knockout-3.4.0.js"></script>
+    <script src="~/SignalR/hubs"></script>
+    <script>
+        $(function () {
+            bt.addEventListener('click', function (e) {
+                $(mod).modal('show');
+                document.body.className = "";
+
+            })
+        });
+
+        (function () {
+            var perfHub = $.connection.perfHub;
+            $.connection.hub.logging = true;
+            $.connection.hub.start();
+
+            perfHub.client.newMessage = function (message) {
+                model.addMessage(message);
+            }
+
+            var Model = function () {
+                var self = this;
+                self.message = ko.observable(""),
+                self.messages = ko.observableArray();
+            }
+
+            Model.prototype = {
+                sendMessage: function () {
+                    var self = this;
+
+                    perfHub.server.send(self.message());
+                    self.message("");
+                },
+                addMessage: function (message) {
+
+                    var self = this;
+                    self.messages.push(message);
+                }
+            }
+
+            var model = new Model();
+            $(function () {
+                ko.applyBindings(model);
+            })
+        })()
+    </script>
+
+
+}
