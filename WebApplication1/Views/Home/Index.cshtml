@@ -29,46 +29,51 @@
 </div>
 
 
+@*<div class="row">
+        <div class="col-md-4">
+            <input type="text" placeholder="Message" data-bind="value:message" />
+            <button class="btn btn-primary" data-bind="click:sendMessage">Send message!</button>
+        </div>
+        <div class="col-md-4">
+            <div data-bind="foreach:messages">
+                <div data-bind="text:$data"></div>
+            </div>
+        </div>
+    </div>*@
+
 <div class="row">
     <div class="col-md-4">
-        <input type="text" placeholder="Message" data-bind="value:message" />
-        <button class="btn btn-primary" data-bind="click:sendMessage">Send message!</button>
-    </div>
-    <div class="col-md-4">
-        <div data-bind="foreach:messages">
-            <div data-bind="text:$data"></div>
+        <span data-bind="text: authorName"></span>(<a data-bind="attr:{href: twitterUrl}, text: twitterAlias"></a>)
+        <div><input type="text" data-bind="textinput: authorName" /><button class="btn btn-primary" data-bind="click: addBook">Add</button></div>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: books">
+                    <tr>
+                        <td><input type="text" data-bind="textinput: name" /></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-
-</div>
-
-<div class="modal" id="mod">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Modal title</h4>
-            </div>
-            <div class="modal-body">
-                <p>One fine body…</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+        <br />
+        <div>
+            <table class="table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <td><span data-bind="text:hell"></span></td>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: books">
+                    <tr>
+                        <td><input type="text" data-bind="textinput: name" /></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-</div>
-
-
-<div class="row jsKnockTests">
-    <div class="col-md-12">
-        <span data-bind="text: authorName"></span>
-        <p>Enter text <input type="text" data-bind="textInput: authorName" /> (<a data-bind="attr: {href: twitterUrl}, text: twitterAlias"></a>)</p>
-        <p>
-            <button data-bind="click: capitalizeAlias">HELL</button>
-        </p>
-
     </div>
 </div>
 
@@ -79,19 +84,29 @@
     <script>
         ko.apB = ko.applyBindings;
         ko.obs = ko.observable;
+
+        function Book(name, isPublished) {
+            this.name = ko.obs(name);
+        }
+
+      
+
         function viewModel() {
-            this.authorName= ko.obs("Kafka");
+            var self = this;
+            this.hell = ko.obs("HELL")
+            this.authorName = ko.obs("Kafka");
             this.twitterAlias = ko.obs("@@ardalis");
             this.twitterUrl = ko.computed(function () {
-                return "twitter.com/" +  this.twitterAlias().replace("@@","");
+                return "https://twitter.com/" + self.twitterAlias().replace("@@", "");
             }, this);
-            this.capitalizeAlias = function () {
-                var current = this.twitterAlias();
-                this.twitterAlias(current.toUpperCase());
+            this.books = ko.observableArray([new Book("Process"), new Book("Dark Tower")]);
+            this.addBook = function () {
+                this.books.push(new Book("Bible"));
             }
-        };
+        }
 
-        ko.apB(viewModel, document.getElementsByClassName("jsKnockTests")[0]);
+        ko.apB(viewModel);
+
 
         $(function () {
             bt.addEventListener('click', function (e) {
@@ -138,3 +153,22 @@
 
 
 }
+
+
+<div class="modal" id="mod">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body…</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
